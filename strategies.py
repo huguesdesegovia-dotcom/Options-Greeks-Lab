@@ -35,6 +35,24 @@ def bull_call_spread_pnl(S_at_expiry, K1, K2, S, T, r, sigma):
     return payoff - cost
 
 
+def strangle_cost(S, K1, K2, T, r, sigma):
+    put = black_scholes_put(S, K1, T, r, sigma)
+    call = black_scholes_call(S, K2, T, r, sigma)
+    return put + call
+
+
+def strangle_payoff(S_at_expiry, K1, K2):
+    call_payoff = max(S_at_expiry - K2, 0)
+    put_payoff = max(K1 - S_at_expiry, 0)
+    return call_payoff + put_payoff
+
+
+def strangle_pnl(S_at_expiry, K1, K2, S, T, r, sigma):
+    cost = strangle_cost(S, K1, K2, T, r, sigma)
+    payoff = strangle_payoff(S_at_expiry, K1, K2)
+    return payoff - cost
+
+
 if __name__ == "__main__":
     S = 100
     K = 100
@@ -58,4 +76,13 @@ if __name__ == "__main__":
     for S_at_expiry in [80, 100, 105, 110, 130]:
         payoff = bull_call_spread_payoff(S_at_expiry, K1, K2)
         pnl = bull_call_spread_pnl(S_at_expiry, K1, K2, S, T, r, sigma)
+        print(f"S_expiry={S_at_expiry} | payoff={payoff:.2f} | PnL={pnl:.2f}")
+        K1_strangle = 90
+    K2_strangle = 110
+    strangle_c = strangle_cost(S, K1_strangle, K2_strangle, T, r, sigma)
+    print("\nStrangle cost =", strangle_c)
+
+    for S_at_expiry in [70, 90, 100, 110, 130]:
+        payoff = strangle_payoff(S_at_expiry, K1_strangle, K2_strangle)
+        pnl = strangle_pnl(S_at_expiry, K1_strangle, K2_strangle, S, T, r, sigma)
         print(f"S_expiry={S_at_expiry} | payoff={payoff:.2f} | PnL={pnl:.2f}")
