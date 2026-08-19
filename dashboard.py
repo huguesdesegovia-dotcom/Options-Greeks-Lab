@@ -51,3 +51,28 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig)
+
+st.header("Greeks visualization")
+
+K_greeks = st.slider("Strike for Greeks (K)", 50, 150, 100, key="K_greeks")
+
+from black_scholes import delta_call, gamma, vega
+
+S_range_greeks = np.linspace(50, 150, 200)
+
+delta_values = [delta_call(s, K_greeks, T, r, sigma) for s in S_range_greeks]
+gamma_values = [gamma(s, K_greeks, T, r, sigma) for s in S_range_greeks]
+vega_values = [vega(s, K_greeks, T, r, sigma) for s in S_range_greeks]
+
+fig_greeks = go.Figure()
+fig_greeks.add_trace(go.Scatter(x=S_range_greeks, y=delta_values, mode='lines', name='Delta (call)'))
+fig_greeks.add_trace(go.Scatter(x=S_range_greeks, y=gamma_values, mode='lines', name='Gamma'))
+fig_greeks.add_trace(go.Scatter(x=S_range_greeks, y=vega_values, mode='lines', name='Vega'))
+fig_greeks.add_vline(x=K_greeks, line_dash="dash", line_color="gray", annotation_text="K")
+
+fig_greeks.update_layout(
+    xaxis_title="Stock price (S)",
+    yaxis_title="Greek value",
+)
+
+st.plotly_chart(fig_greeks)
