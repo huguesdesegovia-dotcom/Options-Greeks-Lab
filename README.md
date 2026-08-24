@@ -1,5 +1,7 @@
 # Options Greeks Lab
 
+🚀 **[Live Demo](https://options-greeks-lab-eubayybf4jvymzqprve3nh.streamlit.app)**
+
 A Python quantitative finance project implementing the Black-Scholes option pricing model, Greeks calculations, and options strategy analysis — with an interactive Streamlit dashboard.
 
 ## Overview
